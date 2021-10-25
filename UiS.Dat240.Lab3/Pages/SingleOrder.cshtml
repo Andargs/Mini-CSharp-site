@@ -1,0 +1,137 @@
+@page "{id:int}"
+@model Lab3.Pages.SingleOrderModel
+@{
+	ViewData["Title"] = "SingleOrder";
+}
+
+<div class="text-center mt-4">
+
+	<h1 class="display-4 mt-5">Order @Model._order.Id</h1>
+	<div class="text-left">
+		@if (Model._order is null)
+		{
+			<p>There are no orders published</p>
+		}
+		else
+		{
+            <table class="table">
+                				<thead>
+					<tr>
+						<th scope="col">Id</th>
+                        <th scope="col">Date</th>
+						<th scope="col">Customer</th>
+						<th scope="col">Building</th>
+                        <th scope="col">RoomNumber</th>
+                        <th scope="col">Notes</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Shipper</th>
+                        <th scope="col">Submit</th>
+					</tr>
+				</thead>
+				<tbody>
+                    <tr>
+                        <td>@Model._order.Id</td>
+                        <td>@Model._order.OrderDate</td>
+                        @if (@Model._order.Customer is not null){
+							<td>@Model._order.Customer.Name</td>
+                            } else{
+                                <td>Ingen kunde</td>
+                            }
+                        <td>@Model._order.Location.Building</td>
+                        <td>@Model._order.Location.RoomNumber</td>
+                        <td>@Model._order.Location.Notes</td>
+                        <td>@Model._order.Status</td>
+                        @if (Model._offer.Shipper is null){
+                            <form asp-action="SetFullfillment">
+                                            <td><input type="text" asp-for="Name" placeholder="Shipper"></td>
+                                            <input type="hidden" asp-for="@Model._order.Id"/>
+                                            <td><input type="submit" asp-page-handler="OrderPlaceddos" asp-route-shipper="@Model.Name"
+                                            asp-route-id="@Model._order.Id"></td>
+                                        </form>
+                        } else{
+                            <td>@Model._offer.Shipper.Name</td>
+                        }
+					
+				</tbody>
+            </table>
+		}
+        @if (Model._order.OrderLines is not null){
+            <h1 class="display-4 mt-5">Order items</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Price</th>
+                        <th>Count</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var orderline in Model._order.OrderLines){
+                    <tr>
+                        
+                            <td>@orderline.Item</td>
+                            <td>@orderline.Price</td>
+                            <td>@orderline.Count</td>
+                            <td>@orderline.Amount</td>
+                        
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        @if (Model._invoice is not null){
+            <h1 class="display-4 mt-5">Invoice</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">OrderId</th>
+                        <th scope="col">Customer</th>
+                        <th scope="col">Building</th>
+                        <th scope="col">RoomNumber</th>
+                        <th scope="col">Notes</th>
+                        <th scope="col">Total Amount</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>@Model._invoice.Id</td>
+                        <td>@Model._invoice.OrderId</td>
+                        <td>@Model._order.Customer.Name</td>
+                        <td>@Model._invoice.Address.Building</td>
+                        <td>@Model._invoice.Address.RoomNumber</td>
+                        <td>@Model._invoice.Address.Notes</td>
+                        <td>@Model._invoice.Amount</td>
+                        <td>@Model._invoice.Status</td>
+                    </tr>
+                </tbody>
+            </table>
+        }
+        <h1 class="display-4 mt-5">Offer</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">OrderId</th>
+                    <th scope="col">Shipper</th>
+                    <th scope="col">Total Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@Model._offer.OrderId</td>
+                    @if (Model._offer.Shipper is null){
+                        <td>Shipper not set</td>
+                    } else {
+                        <td>@Model._offer.Shipper.Name</td>
+                    }
+                    <td>@Model._offer.Reimbursement.Amount</td>
+                </tr>
+            </tbody>
+        </table>
+		<div>
+            </div>
+		</div>
+	</div>
+</div>

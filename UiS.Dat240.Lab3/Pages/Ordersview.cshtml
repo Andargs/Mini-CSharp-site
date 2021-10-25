@@ -1,0 +1,67 @@
+@page
+@model Lab3.Pages.OrdersviewModel
+@{
+	ViewData["Title"] = "Orders";
+}
+
+<div class="text-center mt-4">
+
+	<h1 class="display-4 mt-5">All Orders</h1>
+	<div class="text-left">
+		@if (Model._orders is null)
+		{
+			<p>There are no orders published</p>
+		}
+		else
+		{
+			<table class="table">
+				<thead>
+					<tr>
+						<th scope="col">Id</th>
+						<th scope="col">Customer</th>
+						<th scope="col">Date</th>
+						<th scope="col">Building</th>
+                        <th scope="col">RoomNumber</th>
+                        <th scope="col">Notes</th>
+                        <th scope="col">Status</th>
+					</tr>
+				</thead>
+				<tbody>
+
+					@foreach (var item in Model._orders)
+					{
+						<tr>
+                            <th scope="row"><a asp-page="./SingleOrder" asp-route-id="@item.Id">@item.Id</a></th>
+                            @if (item.Customer is not null){
+							<td>@item.Customer.Name</td>
+                            } else{
+                                <td>@item.Customer</td>
+                            }
+							<td>@item.OrderDate</td>
+                            @if (item.Location is null){
+                                <td>Validator test</td>
+                                <td>validator test</td>
+                                <td>validator test</td>
+                            } else{
+							    <td>@item.Location.Building</td>
+                                <td>@item.Location.RoomNumber</td>
+                                <td>@item.Location.Notes</td>
+                            }
+                            <td>@item.Status</td>
+                            @* <form asp-action="SetFullfillment">
+                                <td><input type="text" asp-for="Name" placeholder="Shipper"></td>
+                                <input type="hidden" asp-for="@item.Id"/>
+                                <td><input type="submit" asp-page-handler="OrderPlaced" asp-route-shipper="@Model.Name"
+                                asp-route-id="@item.Id"></td>
+                            </form> *@
+                            <td></td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		}
+		<div>
+            </div>
+		</div>
+	</div>
+</div>
